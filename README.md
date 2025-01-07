@@ -134,3 +134,9 @@ class TestConfig extends TestCase
 ```shell
 ./vendor/bin/phpunit --bootstrap support/bootstrap.php tests/TestConfig.php --filter testAppConfig
 ```
+
+### 
+#### 安装 think-orm
+```shell
+composer require -W webman/think-orm
+```
