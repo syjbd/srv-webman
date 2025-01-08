@@ -140,3 +140,21 @@ class TestConfig extends TestCase
 ```shell
 composer require -W webman/think-orm
 ```
+
+### 自定义命令行
+#### 安装
+```shell
+composer require webman/console
+```
+#### 使用
+运营以下命令
+```shell
+php php webman make:controller admin
+```
+讲创建一个控制器 `app/controller/AdminController.php`
+
+自定义命令行
+```shell
+php webman make:command config:mysql
+```
+
