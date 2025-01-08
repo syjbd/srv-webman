@@ -12,10 +12,13 @@ class Send extends RpcService {
 
     public function get($arr)
     {
-        var_dump($arr);
         return $this->success($arr);
     }
 
+    public function status()
+    {
+        return $this->error('status error');
+    }
 
 
 }
