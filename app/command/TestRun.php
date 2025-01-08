@@ -3,7 +3,6 @@
 namespace app\command;
 
 use app\service\RpcClient;
-use app\service\RpcService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -34,14 +33,12 @@ class TestRun extends Command
         $name = $input->getArgument('name');
         $output->writeln('Hello test:run');
         $client = new RpcClient();
-//        $client = new RpcService();
         $result = $client->get([
             'url'=>'tcp://127.0.0.1:8888',
             'service'=>'app/service/sms/Send',
             'args'=>['arr'=>[120,'wayne']]
             ]
         );
-//        $result = rpcGet('tcp://127.0.0.1:8888','app/service/sms/Send', 'get', ['arr'=>[120,'wayne']]);
         var_dump($result);
         return self::SUCCESS;
     }
