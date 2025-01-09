@@ -2,13 +2,10 @@
 
 namespace app\command;
 
-use app\service\RpcClients;
-use app\service\RpcService;
-use Webman\RedisQueue\Redis;
+use app\rpc\RpcClient;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
@@ -46,11 +43,17 @@ class TestRun extends Command
 //            var_dump($obj->getError());
 //        }
 
-        $queue = 'queue_sms';
-        // 数据，可以直接传数组，无需序列化
-        $data = ['mobile' => '8825555255', 'type' => 'register', 'ip' => '127.0.0.1'];
-        // 投递消息
-        Redis::send($queue, $data);
+        $obj = new RpcClient();
+        $result = $obj->setConnect('user')
+            ->setService('index/Config')
+            ->setMethod('set')
+            ->getResult(['app' => 'log']);
+        $output->writeln(json_encode($result));
+//        $queue = 'queue_sms';
+//        // 数据，可以直接传数组，无需序列化
+//        $data = ['mobile' => '8825555255', 'type' => 'register', 'ip' => '127.0.0.1'];
+//        // 投递消息
+//        Redis::send($queue, $data);
         // 投递延迟消息，消息会在60秒后处理
 //        Client::send($queue, $data, 60);
 

@@ -24,7 +24,7 @@ return [
         'user' => [
             'host' => 'tcp://127.0.0.1:8882',
             'length'    => 10240000,
-            'token'     => ''
+            'token'     => 'rpcToken'
         ],
         'activity' => [
             'host'      => 'tcp://127.0.0.1:8883',

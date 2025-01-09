@@ -19,22 +19,22 @@ use app\process\Http;
 global $argv;
 
 return [
-    'webman' => [
-        'handler' => Http::class,
-        'listen' => 'http://0.0.0.0:8787',
-        'count' => cpu_count() * 4,
-        'user' => '',
-        'group' => '',
-        'reusePort' => false,
-        'eventLoop' => '',
-        'context' => [],
-        'constructor' => [
-            'requestClass' => Request::class,
-            'logger' => Log::channel('default'),
-            'appPath' => app_path(),
-            'publicPath' => public_path()
-        ]
-    ],
+//    'webman' => [
+//        'handler' => Http::class,
+//        'listen' => 'http://0.0.0.0:8882',
+//        'count' => cpu_count() * 4,
+//        'user' => '',
+//        'group' => '',
+//        'reusePort' => false,
+//        'eventLoop' => '',
+//        'context' => [],
+//        'constructor' => [
+//            'requestClass' => Request::class,
+//            'logger' => Log::channel('default'),
+//            'appPath' => app_path(),
+//            'publicPath' => public_path()
+//        ]
+//    ],
     // File update detection and automatic reload
     'monitor' => [
         'handler' => app\process\Monitor::class,
@@ -62,7 +62,7 @@ return [
 
     'prc' => [
         'handler' => app\process\Rpc::class,
-        'listen'  => 'text://0.0.0.0:8888', // 这里用了text协议，也可以用frame或其它协议
+        'listen'  => 'text://0.0.0.0:8882', // 这里用了text协议，也可以用frame或其它协议
         'count'   => 8, // 可以设置多进程
     ],
 ];
