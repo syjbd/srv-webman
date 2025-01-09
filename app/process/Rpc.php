@@ -14,9 +14,10 @@ class Rpc
         $data = json_decode($data, true);
         $class = $data['class'];
         $method = $data['method'];
+        $token = $data['token'];
         $args = $data['args'];
         if (!isset($instances[$class])) {
-            $instances[$class] = new $class; // 缓存类实例，避免重复初始化
+            $instances[$class] = new $class($token); // 缓存类实例，避免重复初始化
         }
         $connection->send(call_user_func_array([$instances[$class], $method], $args));
     }

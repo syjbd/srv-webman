@@ -4,6 +4,7 @@ namespace app\command;
 
 use app\service\RpcClients;
 use app\service\RpcService;
+use Webman\RedisQueue\Redis;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -34,15 +35,25 @@ class TestRun extends Command
         $name = $input->getArgument('name');
         $output->writeln('Hello test:run');
 //        $result = rpcGet('tcp://127.0.0.1:8888','app/service/sms/Send','get',['arr'=>[120,'wayne']]);
-        $obj = new RpcClients();
-        $result = $obj->setHost('tcp://127.0.0.1:8888')
-        ->setService('app/service/sms/Send')
-        ->setMethod('status')
-        ->getResult(['arr'=>[120,'wayne']]);
-        var_dump($result);
-        if($result === false){
-            var_dump($obj->getError());
-        }
+
+
+//        $obj = new RpcClients();
+//        $result = $obj->setService('app/service/sms/Send')
+//        ->setMethod('get')
+//        ->getResult(['arr'=>[120,'wayne']]);
+//        var_dump($result);
+//        if($result === false){
+//            var_dump($obj->getError());
+//        }
+
+        $queue = 'queue_sms';
+        // 数据，可以直接传数组，无需序列化
+        $data = ['mobile' => '8825555255', 'type' => 'register', 'ip' => '127.0.0.1'];
+        // 投递消息
+        Redis::send($queue, $data);
+        // 投递延迟消息，消息会在60秒后处理
+//        Client::send($queue, $data, 60);
+
         return self::SUCCESS;
     }
 

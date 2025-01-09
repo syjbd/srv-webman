@@ -10,15 +10,65 @@ use app\service\RpcService;
 
 class Send extends RpcService {
 
-    public function get($arr)
+    private $maxDailyLimit;
+    private $sendInterval;
+    private $storageFile;
+
+
+    protected $mobile = '';
+    protected $type = '';
+
+
+    public function setMobile($mobile): Send
     {
-        return $this->success($arr);
+        $this->mobile = $mobile;
+        return $this;
     }
 
-    public function status()
+    public function setType($type): Send
     {
-        return $this->error('status error');
+        $this->type = $type;
+        return $this;
     }
 
+    public function canSend($phoneNumber): bool
+    {
+        $today = date('Y-m-d');
+        if (!isset($logs[$phoneNumber])) {
+            $logs[$phoneNumber] = [];
+        }
+        // Filter out old entries
+        $logs[$phoneNumber] = array_filter($logs[$phoneNumber], function($log) use ($today) {
+            return strpos($log,$today) === 0;
+        });
+        // Count today's messages
+        $todayLogs = array_filter($logs[$phoneNumber], function($log) use ($today) {
+            return strpos($log, $today) === 0;
+        });
+        if (count($todayLogs) >= $this->maxDailyLimit) {
+            return false; // Exceeded daily maximum
+        }
+        if (!empty($todayLogs)) {
+            // Check the latest send time for interval checking
+            $lastSendTime = end($todayLogs);
+            if (time() - strtotime($lastSendTime) <$this->sendInterval) {
+                return false; // Didn't meet the interval requirement
+            }
+        }
+        return true;
+    }
+
+    public function sendSms($phoneNumber,$message): string
+    {
+        if (!$this->canSend($phoneNumber)) {
+            return "Cannot send SMS: Limit exceeded or interval not met.";
+        }
+
+        // Assuming there's a function sendSmsViaApi($phoneNumber,$message) that sends the SMS
+        // sendSmsViaApi($phoneNumber,$message);
+
+
+        return "SMS sent successfully.";
+    }
 
 }

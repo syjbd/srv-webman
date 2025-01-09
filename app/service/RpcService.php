@@ -11,6 +11,14 @@ use support\Log;
 
 class RpcService{
 
+    protected $rpcToken = 'rpcToken';
+
+    public function __construct($rpcToken = ''){
+        if(!empty($this->rpcToken) && $rpcToken != $this->rpcToken){
+           throw new \Exception('rpcToken error');
+        }
+    }
+
     public function __call($name, $arguments){
         Log::info('BaseService __call',[$name, $arguments]);
     }

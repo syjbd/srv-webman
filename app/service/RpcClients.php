@@ -9,11 +9,22 @@ namespace app\service;
 
 class RpcClients{
 
+    protected $connect = [];
     protected $error;
 
     protected $host;
     protected $service;
     protected $method;
+
+    public function __construct(){
+        $this->connect = config("rpc.connections.default");
+    }
+
+    public function setConnect($connect=""): RpcClients
+    {
+        $this->connect = config("rpc.connections.$connect");
+        return $this;
+    }
 
     public function getError()
     {
@@ -22,16 +33,9 @@ class RpcClients{
 
     public function __call($name, $arguments)
     {
-        $this->host = $arguments[0]['host'];
         $this->service = $arguments[0]['service'];
         $this->method = $name;
         return $this->getResult($arguments[0]['args']);
-    }
-
-    public function setHost($host): RpcClients
-    {
-        $this->host = $host;
-        return $this;
     }
 
     public function setService($service): RpcClients{
@@ -48,14 +52,16 @@ class RpcClients{
     public function getResult($arguments)
     {
         $service = str_replace('/', '\\', $this->service);
-        $client = stream_socket_client($this->host);
+        $client = stream_socket_client($this->connect['host']);
+        var_dump($arguments);
         $request = [
             'class'   => $service,
             'method'  => $this->method,
+            'token'   => $this->connect['token'],
             'args'    => $arguments,
         ];
         fwrite($client, json_encode($request)."\n"); // text协议末尾有个换行符"\n"
-        $result = fgets($client, 10240000);
+        $result = fgets($client, $this->connect['length']);
         $result = json_decode($result, true);
         if($result['code'] === \app\service\RpcEnum::CODE_SUCCESS){
             return $result['data'];
